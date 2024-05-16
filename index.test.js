@@ -44,4 +44,36 @@ describe('Social Sequelzie Test', () => {
         expect(comment).toEqual(expect.objectContaining(comments[0]));
     })
 
+    // from solution video
+    test("user can only have one profile", async function(){
+        const user = await User.create(users[1])
+        const profile = await Profile.create(profiles[1])
+        await user.setProfile(profile)
+        const associatedProfile = await user.getProfile()
+        expect(associatedProfile instanceof Profile).toBeTruthy()
+    })
+
+    test("user can have many posts", async function(){
+        const user = await User.create(users[2])
+        const createdPosts = await Post.bulkCreate(posts)
+        await user.addPosts(createdPosts)
+        const associatedPosts = await user.getPosts()
+        expect(associatedPosts[1] instanceof Post).toBeTruthy()
+    })
+
+    test("posts can only have one user", async function(){
+        const user1 = await User.create(users[3])
+        const user2 = await User.create[users[4]]
+        const post = await Post.create(posts[3])
+
+        let result;
+        try {
+            await post.addUsers([user1,user2])
+        } catch (err) {
+            result = err
+        }
+
+        expect(result.message).toBe("post.addUsers is not a function")
+    })
+
 })
